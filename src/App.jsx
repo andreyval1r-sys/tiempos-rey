@@ -57,8 +57,12 @@ function App() {
   }
 
   function generarTiquete() {
-    const rand = Math.floor(Math.random() * 90000000) + 10000000
-    setTiquete(`37774-3803-${rand}`)
+  setTiquete({
+    numero: numero,
+    monto: monto,
+    sorteo: sorteos.find(s => s.id === sorteoId)?.nombre || '',
+    condicion: condicion
+  });
   }
 
   async function ingresarVenta() {
@@ -77,12 +81,16 @@ function App() {
       numero,
       monto: parseInt(monto)
     })
-
+  setTiquete({
+    numero: numero,
+    monto: parseInt(monto),
+    sorteo: sorteos.find(s => s.id === sorteoId)?.nombre || '',
+    condicion: condicion
+  });
     if(error) return alert('Error: ' + error.message)
     
     setNumero('')
     setMonto('')
-    generarTiquete()
     cargarVentas()
   }
 
@@ -102,9 +110,11 @@ function App() {
   }
 
   const compartirWhatsApp = () => {
-    let texto = encodeURIComponent(tiquete);
-    window.open(`https://wa.me/?text=${texto}`, '_blank');
+  if (!tiquete?.numero) return alert('Primero registre una venta');
+  const texto = `*TIQUETE TIEMPOS REY*%0A%0ANúmero: ${tiquete.numero}%0AMonto: ₡${tiquete.monto}%0ASorteo: ${tiquete.sorteo}%0ACondición: ${tiquete.condicion}%0A%0AGracias por su compra`;
+  window.open(`https://wa.me/?text=${texto}`, '_blank');
   }
+  
   return (
     <div style={{background:'#0f172a', minHeight:'100vh', color:'white', fontFamily:'Arial'}}>
       <div style={{background:'#1e3a5f', padding:'12px 20px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
@@ -154,24 +164,36 @@ function App() {
           </button>
         </div>
 
-        <div style={{background:'#1e293b', padding:'15px', marginBottom:'20px', borderRadius:'4px'}}>
-        {tiquete && (
-  <div className="tiquete" style={{marginBottom:'20px', paddingBottom:'16px', borderBottom:'1px solid #334155'}}>
-    <div style={{display:'flex', justifyContent:'space-between', marginBottom:'12px'}}>
-      <h3 style={{margin:0}}>Tiquete: {tiquete.codigo}</h3>
-      <span style={{color:'#94a3b8'}}>{tiquete.fecha} - {tiquete.hora}</span>
-    </div>
+          <div style={{background:'#1e3a5f', padding:'16px', borderRadius:'8px', margin:'16px 0'}}>
+    <div style={{color:'white', fontWeight:'bold', marginBottom:'8px'}}>Tiquete:</div>
     
-    <div style={{fontSize:'14px', lineHeight:'1.8'}}>
-      <div><strong>Número:</strong> {tiquete.numero}</div>
-      <div><strong>Monto:</strong> ₡{tiquete.monto}</div>
-      <div><strong>Sorteo:</strong> {tiquete.sorteo}</div>
-      <div><strong>Condición:</strong> {tiquete.condicion}</div>
-      {tiquete.cliente && <div><strong>Cliente:</strong> {tiquete.cliente}</div>}
-      {tiquete.telefono && <div><strong>Tel:</strong> {tiquete.telefono}</div>}
-    </div>
+    {tiquete?.numero ? (
+      <>
+        <div style={{color:'#94a3b8'}}>Número: <span style={{color:'white'}}>{tiquete.numero}</span></div>
+        <div style={{color:'#94a3b8'}}>Monto: <span style={{color:'white'}}>₡{tiquete.monto}</span></div>
+        <div style={{color:'#94a3b8'}}>Sorteo: <span style={{color:'white'}}>{tiquete.sorteo}</span></div>
+        <div style={{color:'#94a3b8'}}>Condición: <span style={{color:'white'}}>{tiquete.condicion}</span></div>
+        
+        <div style={{display:'flex', gap:'8px', marginTop:'12px'}}>
+          <button 
+            onClick={imprimirTiquete} 
+            style={{background:'#16a34a', padding:'8px 16px', borderRadius:'6px', color:'white', fontWeight:'bold', width:'100%', border:'none', cursor:'pointer'}}
+          >
+            Imprimir
+          </button>
+          
+          <button 
+            onClick={compartirWhatsApp} 
+            style={{background:'#22c55e', padding:'8px 16px', borderRadius:'6px', color:'white', fontWeight:'bold', width:'100%', border:'none', cursor:'pointer'}}
+          >
+            WhatsApp
+          </button>
+        </div>
+      </>
+    ) : (
+      <div style={{color:'#64748b'}}>Registre una venta para ver el tiquete</div>
+    )}
   </div>
-)}
           <div style={{overflowX:'auto'}}>
             <table style={{width:'100%', borderCollapse:'collapse', minWidth:'500px'}}>
               <thead>
