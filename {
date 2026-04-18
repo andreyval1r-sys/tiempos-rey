@@ -1,0 +1,60 @@
+import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
+
+function App() {
+  const [sorteos, setSorteos] = useState([])
+  const [sorteoId, setSorteoId] = useState('')
+  const [numero, setNumero] = useState('')
+  const [monto, setMonto] = useState('')
+  const [cliente, setCliente] = useState('')
+  const [ventas, setVentas] = useState([])
+  const [restricciones, setRestricciones] = useState([])
+  const [tiquete, setTiquete] = useState('')
+  const [balance, setBalance] = useState(0)
+
+  useEffect(() => { cargarSorteos() }, [])
+
+  useEffect(() => {
+    if(sorteoId) {
+      cargarVentas()
+      cargarRestricciones()
+      generarTiquete()
+    }
+  }, [sorteoId])
+
+  async function cargarSorteos() {
+    const { data } = await supabase.from('sorteos').select('*').eq('activo', true).order('id')
+    setSorteos(data || [])
+    if(data?.length > 0) setSorteoId(data[0].id)
+  }
+
+  async function cargarVentas() {
+    const hoy = new Date().toISOString().split('T')[0]
+    const { data } = await supabase
+.from('ventas')
+.select('*, sorteos(nombre)')
+.eq('sorteo_id', sorteoId)
+.gte('fecha', hoy)
+.order('fecha', { ascending: false })
+    setVentas(data || [])
+    const total = (data || []).reduce((sum, v) => sum + v.monto, 0)
+    const comi = (data || []).reduce((sum, v) => sum + v.comision, 0)
+    setBalance(total - comi)
+  }
+
+  async function cargarRestricciones() {
+    const { data } = await supabase
+.from('restricciones')
+.select('*')
+.eq('sorteo_id', sorteoId)
+    setRestricciones(data || [])
+  }
+
+  function generarTiquete() {
+    const rand = Math.floor(Math.random() * 90000000) + 10000000
+    setTiquete(`37774-380

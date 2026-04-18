@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+  @page { 
+    size: 80mm auto; 
+    margin: 0; 
+  }
+  body * { visibility: hidden; }
+  .tiquete, .tiquete * { visibility: visible; }
+  .tiquete { position: absolute; left: 0; top: 0; width: 80mm; }
+  .no-print { display: none !important; }
+}
