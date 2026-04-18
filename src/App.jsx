@@ -155,10 +155,23 @@ function App() {
         </div>
 
         <div style={{background:'#1e293b', padding:'15px', marginBottom:'20px', borderRadius:'4px'}}>
-          <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px', flexWrap:'wrap'}}>
-            <h3 style={{margin:0}}>Tiquete: {tiquete}</h3>
-            <span style={{color:'#94a3b8'}}>{sorteoActual?.nombre}</span>
-          </div>
+        {tiquete && (
+  <div className="tiquete" style={{marginBottom:'20px', paddingBottom:'16px', borderBottom:'1px solid #334155'}}>
+    <div style={{display:'flex', justifyContent:'space-between', marginBottom:'12px'}}>
+      <h3 style={{margin:0}}>Tiquete: {tiquete.codigo}</h3>
+      <span style={{color:'#94a3b8'}}>{tiquete.fecha} - {tiquete.hora}</span>
+    </div>
+    
+    <div style={{fontSize:'14px', lineHeight:'1.8'}}>
+      <div><strong>Número:</strong> {tiquete.numero}</div>
+      <div><strong>Monto:</strong> ₡{tiquete.monto}</div>
+      <div><strong>Sorteo:</strong> {tiquete.sorteo}</div>
+      <div><strong>Condición:</strong> {tiquete.condicion}</div>
+      {tiquete.cliente && <div><strong>Cliente:</strong> {tiquete.cliente}</div>}
+      {tiquete.telefono && <div><strong>Tel:</strong> {tiquete.telefono}</div>}
+    </div>
+  </div>
+)}
           <div style={{overflowX:'auto'}}>
             <table style={{width:'100%', borderCollapse:'collapse', minWidth:'500px'}}>
               <thead>
