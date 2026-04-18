@@ -11,6 +11,7 @@ function App() {
   const [sorteoId, setSorteoId] = useState('')
   const [numero, setNumero] = useState('')
   const [monto, setMonto] = useState('')
+  const [condicion, setCondicion] = useState('Contado')
   const [cliente, setCliente] = useState('')
   const [ventas, setVentas] = useState([])
   const [restricciones, setRestricciones] = useState([])
@@ -96,7 +97,14 @@ function App() {
   ).sort((a,b) => b[1] - a[1]).slice(0,10)
 
   const sorteoActual = sorteos.find(s => s.id == sorteoId)
+  const imprimirTiquete = () => {
+    window.print();
+  }
 
+  const compartirWhatsApp = () => {
+    let texto = encodeURIComponent(tiquete);
+    window.open(`https://wa.me/?text=${texto}`, '_blank');
+  }
   return (
     <div style={{background:'#0f172a', minHeight:'100vh', color:'white', fontFamily:'Arial'}}>
       <div style={{background:'#1e3a5f', padding:'12px 20px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
@@ -132,9 +140,14 @@ function App() {
           <input value={numero} onChange={e=>setNumero(e.target.value)} 
             placeholder="Número" maxLength="2" type="text"
             style={{flex:'1 1 100px', padding:'12px', fontSize:'20px', background:'#1e293b', color:'white', border:'1px solid #334155', borderRadius:'4px', textAlign:'center'}}/>
-          <input value={monto} onChange={e=>setMonto(e.target.value)} 
-            placeholder="Monto" type="number"
+        <input value={monto} onChange={e=>setMonto(e.target.value)} 
+           placeholder="Monto" type="number"
             style={{flex:'1 1 100px', padding:'12px', fontSize:'20px', background:'#1e293b', color:'white', border:'1px solid #334155', borderRadius:'4px', textAlign:'center'}}/>
+        <select value={condicion} onChange={(e) => setCondicion(e.target.value)} 
+          style={{flex:'1 1 100px', padding:'12px', borderRadius:'8px', background:'#0f172a', color:'white', border:'1px solid #334155'}}>
+          <option value="Contado">Contado</option>
+          <option value="Crédito">Crédito</option>
+        </select>
           <button onClick={ingresarVenta}
             style={{flex:'1 1 150px', padding:'12px', background:'#3b82f6', color:'white', border:'none', fontSize:'16px', cursor:'pointer', borderRadius:'4px', fontWeight:'bold'}}>
             Ingresar Venta
@@ -176,6 +189,14 @@ function App() {
             <strong>Comisión: ₡{comision.toLocaleString()}</strong>
           </div>
         </div>
+      <div style={{display:'flex', gap:'10px', marginTop:'10px'}}>
+        <button onClick={imprimirTiquete} style={{flex:1, padding:'12px', borderRadius:'8px', background:'#16a34a', color:'white', border:'none', fontWeight:'bold'}}>
+          🖨️ Imprimir
+        </button>
+        <button onClick={compartirWhatsApp} style={{flex:1, padding:'12px', borderRadius:'8px', background:'#25d366', color:'white', border:'none', fontWeight:'bold'}}>
+          📱 WhatsApp
+        </button>
+      </div>
 
         <div style={{display:'flex', gap:'20px', flexWrap:'wrap'}}>
           <div style={{flex:'1 1 300px', background:'#1e293b', padding:'15px', borderRadius:'4px'}}>
