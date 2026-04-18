@@ -15,7 +15,7 @@ function App() {
   const [cliente, setCliente] = useState('')
   const [ventas, setVentas] = useState([])
   const [restricciones, setRestricciones] = useState([])
-  const [tiquete, setTiquete] = useState('')
+  const [tiquete, setTiquete] = useState(null)
   const [balance, setBalance] = useState(0)
 
   useEffect(() => { cargarSorteos() }, [])
